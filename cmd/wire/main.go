@@ -37,6 +37,8 @@ import (
 	"golang.org/x/tools/go/types/typeutil"
 )
 
+const version = "0.5.0"
+
 func main() {
 	subcommands.Register(subcommands.CommandsCommand(), "")
 	subcommands.Register(subcommands.FlagsCommand(), "")
@@ -45,6 +47,7 @@ func main() {
 	subcommands.Register(&diffCmd{}, "")
 	subcommands.Register(&genCmd{}, "")
 	subcommands.Register(&showCmd{}, "")
+	subcommands.Register(&versionCmd{version: version}, "")
 	flag.Parse()
 
 	// Initialize the default logger to log to stderr.
@@ -384,6 +387,31 @@ func (cmd *checkCmd) Execute(ctx context.Context, f *flag.FlagSet, args ...inter
 		log.Println("error loading packages")
 		return subcommands.ExitFailure
 	}
+	return subcommands.ExitSuccess
+}
+
+type versionCmd struct {
+	version string
+}
+
+func (v *versionCmd) Name() string {
+	return "version"
+}
+
+func (v *versionCmd) Synopsis() string {
+	return "print Wire version"
+}
+
+func (v *versionCmd) Usage() string {
+	return "wire version"
+}
+
+func (v *versionCmd) SetFlags(set *flag.FlagSet) {
+
+}
+
+func (v *versionCmd) Execute(ctx context.Context, f *flag.FlagSet, args ...interface{}) subcommands.ExitStatus {
+	log.Printf("Version: %s\n", v.version)
 	return subcommands.ExitSuccess
 }
 
